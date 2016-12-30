@@ -13,9 +13,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 Base = declarative_base()
-
-
-
 class phonemark(Base):
     __tablename__ = 'phonemark_new'
 
@@ -36,6 +33,126 @@ class phonemark(Base):
         self.ctime = ctime
         self.source = source
 
+
+class PHONEMARK_ALL_CLS_2016_10_31(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_10_31'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
+class PHONEMARK_ALL_CLS_2016_08_23(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_08_23'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
+class PHONEMARK_ALL_CLS_2016_08_15(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_08_15'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
+class PHONEMARK_ALL_CLS_2016_06_12(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_06_12'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
+class PHONEMARK_ALL_CLS_2016_05_30(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_05_30'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
+class PHONEMARK_ALL_CLS_2016_05_18(Base):
+    __tablename__ = 'PHONEMARK_ALL_CLS_2016_05_18'
+
+    phone = Column(String(15), primary_key=True)
+    location = Column(String(32))
+    cardtype = Column(String(64))
+    tagcontent = Column(String(512))
+    tagcount = Column(INT)
+    ctime = Column(INT)
+    source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
 
 
 class Dao(object):

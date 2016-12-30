@@ -21,16 +21,22 @@ import json
 import requests
 import phonemarkDao
 import proxy
+import ConfigParser
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 
 class sougouSpider(object):
-    def __init__(self):
+    def __init__(self, conf_path = 'db.conf'):
         """
         初始化
         """
+
+        conf = ConfigParser.ConfigParser()
+        conf.read(conf_path)
+        self.redis_name = conf.get('redis', 'redis_name')
+
         #日志
         logging.basicConfig(filename="output/sougou_spider.log",
                             level=logging.INFO,
@@ -40,14 +46,19 @@ class sougouSpider(object):
         self.log.setLevel(logging.WARNING)
 
         #redis
-        self.redis_name = 'phonemark_test'
         self.pool, self.redis = distinct.redis_init()
 
         # SQL
-        self.dbhost = "99.48.58.245"
-        self.dbname = "tagphone"
-        self.dbusername = "sa"
-        self.dbpasswd = "mime@123"
+
+        self.dbhost = conf.get('tagphonedb', 'host')
+        self.dbname = conf.get('tagphonedb', 'database')
+        self.dbusername = conf.get('tagphonedb', 'user')
+        self.dbpasswd = conf.get('tagphonedb', 'passwd')
+
+        # self.dbhost = "99.48.58.245"
+        # self.dbname = "tagphone"
+        # self.dbusername = "sa"
+        # self.dbpasswd = "mime@123"
 
         try:
             self.conn = pymssql.connect(host=self.dbhost,
@@ -83,11 +94,9 @@ class sougouSpider(object):
         try:
             result = distinct.check_repeate(self.redis, body['phone'], self.redis_name)
             if result == 1:
-                pass
+                self.get_info_from_sogou(body)
             else:
                 return False
-
-            self.get_info_from_sogou(body)
         except Exception, e:
             self.log.error(u'处理数据异常, 号码：{0}'.format(body))
             self.log.error(traceback.format_exc())
@@ -134,8 +143,28 @@ class sougouSpider(object):
                 source = 'sogou'
 
             try:
-                if body['table'] == 'phonemark_new':
-                    phonemark = phonemarkDao.phonemark(phone=body['phone'], location=location, cardtype=cardtype,
+                if body['table'] == 'PHONEMARK_ALL_CLS_2016_10_31':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_10_31(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_08_23':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_08_23(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_08_15':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_08_15(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_06_12':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_06_12(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_05_30':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_05_30(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_05_18':
+                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_05_18(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
                 else:

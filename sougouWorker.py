@@ -35,14 +35,17 @@ sys.setdefaultencoding('utf8')
 
 class sougouWorker(object):
 
-    def __init__(self, conf = 'db.conf'):
+    def __init__(self, conf_path = 'db.conf'):
         """初始化"""
+
+        conf = ConfigParser.ConfigParser()
+        conf.read(conf_path)
+        mq_name = conf.get('mq', 'queue_name')
 
         #数据库初始化
         self.dao = phonemarkDao.Dao()
 
         #消息队列
-        mq_name = 'phonemark_test'
         self.mq = message_queue.message(mq_name, handle_data = self.recv)
 
         # Log
@@ -66,14 +69,17 @@ class sougouWorker(object):
 
         self.log.info(u'开始发送数据到消息队列')
 
-        table_list = ['', '', '', '', '', '']
+        table_list = ['PHONEMARK_ALL_2016_10_31', 'PHONEMARK_ALL_2016_08_23', 'PHONEMARK_ALL_2016_08_15',
+                      'PHONEMARK_ALL_2016_06_12', 'PHONEMARK_ALL_2016_05_30', 'PHONEMARK_ALL_2016_05_18']
+
         for table_name in table_list:
             ret = self.dao.query_all(['phone'], table_name)
 
             for item in ret:
                 # print item
                 data = {'phone': item, 'table' : table_name}
-                self.mq.send_message(data)
+                msg = json.dumps(data)
+                self.mq.send_message(msg)
 
         self.log.info(u'发送数据完成')
 
@@ -87,10 +93,10 @@ class sougouWorker(object):
         self.log.info(body)
 
         try:
-            decode = json.loads(body)
+            data = json.loads(body)
             # phone = decode['phone']
             # table = decode['table']
-            ret = self.do(body)
+            ret = self.do(data)
 
             if ret == True:
                 return 1
@@ -103,7 +109,7 @@ class sougouWorker(object):
         return 0
 
 
-    def do(self, body):
+    def do(self, data):
         """
         根据传输的数据进行分类
         :param phone:
@@ -112,11 +118,10 @@ class sougouWorker(object):
 
         self.log.info(u'处理数据')
 
-        if self.spider.being(body) == True:
+        if self.spider.being(data) == True:
             pass
         else:
             pass
-        print body
 
         self.log.info(u'处理完成')
         return True
