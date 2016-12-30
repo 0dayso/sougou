@@ -143,28 +143,28 @@ class sougouSpider(object):
                 source = 'sogou'
 
             try:
-                if body['table'] == 'PHONEMARK_ALL_CLS_2016_10_31':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_10_31(phone=body['phone'], location=location, cardtype=cardtype,
+                if body['table'] == 'PHONEMARK_ALL_2016_10_31':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_10_31(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
-                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_08_23':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_08_23(phone=body['phone'], location=location, cardtype=cardtype,
+                elif body['table'] == 'PHONEMARK_ALL_2016_08_23':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_08_23(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
-                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_08_15':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_08_15(phone=body['phone'], location=location, cardtype=cardtype,
+                elif body['table'] == 'PHONEMARK_ALL_2016_08_15':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_08_15(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
-                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_06_12':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_06_12(phone=body['phone'], location=location, cardtype=cardtype,
+                elif body['table'] == 'PHONEMARK_ALL_2016_06_12':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_06_12(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
-                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_05_30':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_05_30(phone=body['phone'], location=location, cardtype=cardtype,
+                elif body['table'] == 'PHONEMARK_ALL_2016_05_30':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_05_30(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
-                elif body['table'] == 'PHONEMARK_ALL_CLS_2016_05_18':
-                    phonemark = phonemarkDao.PHONEMARK_ALL_CLS_2016_05_18(phone=body['phone'], location=location, cardtype=cardtype,
+                elif body['table'] == 'PHONEMARK_ALL_2016_05_18':
+                    phonemark = phonemarkDao.PHONEMARK_TEST_2016_05_18(phone=body['phone'], location=location, cardtype=cardtype,
                                                        tagcontent=tagcontent, tagcount=tagcount, source=source,
                                                        ctime=time.time())
                 else:

@@ -140,9 +140,9 @@ class sougouWorker(object):
 
 if __name__ == '__main__':
 
-    spider = sougouWorker()
-    # spider.send()
-    spider.begin_recv()
+    # spider = sougouWorker()
+    # # spider.send()
+    # spider.begin_recv()
 
     if len(sys.argv) == 1:
         print 'Failed'

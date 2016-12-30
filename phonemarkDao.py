@@ -34,8 +34,8 @@ class phonemark(Base):
         self.source = source
 
 
-class PHONEMARK_ALL_CLS_2016_10_31(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_10_31'
+class PHONEMARK_TEST_2016_10_31(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_10_31'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
@@ -54,8 +54,8 @@ class PHONEMARK_ALL_CLS_2016_10_31(Base):
         self.ctime = ctime
         self.source = source
 
-class PHONEMARK_ALL_CLS_2016_08_23(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_08_23'
+class PHONEMARK_TEST_2016_08_23(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_08_23'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
@@ -74,8 +74,8 @@ class PHONEMARK_ALL_CLS_2016_08_23(Base):
         self.ctime = ctime
         self.source = source
 
-class PHONEMARK_ALL_CLS_2016_08_15(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_08_15'
+class PHONEMARK_TEST_2016_08_15(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_08_15'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
@@ -94,8 +94,8 @@ class PHONEMARK_ALL_CLS_2016_08_15(Base):
         self.ctime = ctime
         self.source = source
 
-class PHONEMARK_ALL_CLS_2016_06_12(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_06_12'
+class PHONEMARK_TEST_2016_06_12(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_06_12'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
@@ -114,8 +114,8 @@ class PHONEMARK_ALL_CLS_2016_06_12(Base):
         self.ctime = ctime
         self.source = source
 
-class PHONEMARK_ALL_CLS_2016_05_30(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_05_30'
+class PHONEMARK_TEST_2016_05_30(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_05_30'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
@@ -134,8 +134,8 @@ class PHONEMARK_ALL_CLS_2016_05_30(Base):
         self.ctime = ctime
         self.source = source
 
-class PHONEMARK_ALL_CLS_2016_05_18(Base):
-    __tablename__ = 'PHONEMARK_ALL_CLS_2016_05_18'
+class PHONEMARK_TEST_2016_05_18(Base):
+    __tablename__ = 'PHONEMARK_TEST_2016_05_18'
 
     phone = Column(String(15), primary_key=True)
     location = Column(String(32))
