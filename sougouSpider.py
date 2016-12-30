@@ -78,25 +78,25 @@ class sougouSpider(object):
         # self.proxy = proxy.Proxy()
         # self.proxy.initProxy()
 
-    def being(self, phone):
-        self.log.info(u'开始处理数据, {0}'.format(phone))
+    def being(self, body):
+        self.log.info(u'开始处理数据, {0}'.format(body))
         try:
-            result = distinct.check_repeate(self.redis, phone, self.redis_name)
+            result = distinct.check_repeate(self.redis, body['phone'], self.redis_name)
             if result == 1:
                 pass
             else:
                 return False
 
-            self.get_info_from_sogou(phone)
+            self.get_info_from_sogou(body)
         except Exception, e:
-            self.log.error(u'处理数据异常, 号码：{0}'.format(phone))
+            self.log.error(u'处理数据异常, 号码：{0}'.format(body))
             self.log.error(traceback.format_exc())
             return False
 
-        self.log.info(u'处理数据完成, {0}'.format(phone))
+        self.log.info(u'处理数据完成, {0}'.format(body))
         return True
 
-    def get_info_from_sogou(self, phone):
+    def get_info_from_sogou(self, body):
         """
         任务爬取主要部分
         :param phone:
@@ -109,7 +109,7 @@ class sougouSpider(object):
             if paramstr is None:
                 paramstr = random.choice(self.hidlist)
 
-            data_enc = paramstr.format(phone=phone)
+            data_enc = paramstr.format(phone=body['phone'])
             parames = self.aesfunc.encrypt(data_enc)
             url = self.url.format(parames=parames)
             ret = self.requesetGet(url)
@@ -122,8 +122,8 @@ class sougouSpider(object):
 
             result_json = ret_json.get("num_info")
             if result_json is None:
-                self.un_phones.append(phone)
-                self.log.error(u"此号码返回None：" + str(phone))
+                self.un_phones.append(body['phone'])
+                self.log.error(u"此号码返回None：" + str(body['phone']))
                 return
             location, cardtype, tagcontent, tagcount = result_json.get('place'), result_json.get(
                 'tel_co'), result_json.get('tag'), result_json.get('amount')
@@ -134,14 +134,14 @@ class sougouSpider(object):
                 source = 'sogou'
 
             try:
-                phonemark = phonemarkDao.phonemark()
-                phonemark.phone = phone
-                phonemark.location = location
-                phonemark.cardtype = cardtype
-                phonemark.tagcontent = tagcontent
-                phonemark.tagcount = tagcount
-                phonemark.source = source
-                phonemark.ctime = time.time()
+                if body['table'] == 'phonemark_new':
+                    phonemark = phonemarkDao.phonemark(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
+                else:
+                    phonemark = phonemarkDao.phonemark(phone=body['phone'], location=location, cardtype=cardtype,
+                                                       tagcontent=tagcontent, tagcount=tagcount, source=source,
+                                                       ctime=time.time())
 
                 if hasattr(self, 'dao') == False:
                     self.dao = phonemarkDao.Dao()

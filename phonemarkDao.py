@@ -15,6 +15,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
+
 class phonemark(Base):
     __tablename__ = 'phonemark_new'
 
@@ -25,6 +26,16 @@ class phonemark(Base):
     tagcount = Column(INT)
     ctime = Column(INT)
     source = Column(String(50))
+
+    def __init__(self, phone, location, cardtype, tagcontent, tagcount, ctime, source):
+        self.phone = phone
+        self.location = location
+        self.cardtype = cardtype
+        self.tagcontent = tagcontent
+        self.tagcount = tagcount
+        self.ctime = ctime
+        self.source = source
+
 
 
 class Dao(object):

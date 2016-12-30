@@ -9,7 +9,6 @@ Date: '2016/12/20' '17:47'
 
 
 import requests
-import logger
 import ConfigParser
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -20,13 +19,19 @@ import codecs
 import ConfigParser
 from sqlalchemy.dialects.mssql import TINYINT
 
+import sys
+
 
 import message_queue
 import phonemarkDao
 import logging
+import json
+import traceback
 
 import sougouSpider
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class sougouWorker(object):
 
@@ -60,11 +65,15 @@ class sougouWorker(object):
         # self.dao = phonemarkDao.Dao()
 
         self.log.info(u'开始发送数据到消息队列')
-        ret = self.dao.query_all(['PHONE_NUM'], 'o2o_c_black_name_1')
 
-        for item in ret:
-            # print item
-            self.mq.send_message(item)
+        table_list = ['', '', '', '', '', '']
+        for table_name in table_list:
+            ret = self.dao.query_all(['phone'], table_name)
+
+            for item in ret:
+                # print item
+                data = {'phone': item, 'table' : table_name}
+                self.mq.send_message(data)
 
         self.log.info(u'发送数据完成')
 
@@ -76,16 +85,25 @@ class sougouWorker(object):
         """
         self.log.info(u'接受消息队列数据')
         self.log.info(body)
-        print body
-        ret = self.do(body)
 
-        if ret == True:
-            return 1
-        elif ret == False:
-            return 0
+        try:
+            decode = json.loads(body)
+            # phone = decode['phone']
+            # table = decode['table']
+            ret = self.do(body)
+
+            if ret == True:
+                return 1
+            elif ret == False:
+                return 0
+        except:
+            self.log.info(body)
+            self.log.info(traceback.format_exc())
+
+        return 0
 
 
-    def do(self, phone):
+    def do(self, body):
         """
         根据传输的数据进行分类
         :param phone:
@@ -94,11 +112,11 @@ class sougouWorker(object):
 
         self.log.info(u'处理数据')
 
-        if self.spider.being(phone) == True:
+        if self.spider.being(body) == True:
             pass
         else:
             pass
-        print phone
+        print body
 
         self.log.info(u'处理完成')
         return True
@@ -116,12 +134,36 @@ class sougouWorker(object):
 
 
 if __name__ == '__main__':
+
     spider = sougouWorker()
-
-    #发送
     # spider.send()
-
-    #接受数据并处理
     spider.begin_recv()
+
+    if len(sys.argv) == 1:
+        print 'Failed'
+    elif len(sys.argv) == 2:
+        spider = sougouWorker()
+        if sys.argv[1] == 'send':
+            spider.send()
+            #发送消息
+            pass
+        elif sys.argv[1] == 'receive':
+            spider.begin_recv()
+            #接受消息
+        else:
+            print 'param must be send or receive '
+        print sys.argv[0]
+        print sys.argv[1]
+    else:
+        print 'Failed'
+
+    #
+    # spider = sougouWorker()
+    #
+    # #发送
+    # # spider.send()
+    #
+    # #接受数据并处理
+    # spider.begin_recv()
 
 
