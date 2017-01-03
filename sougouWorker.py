@@ -71,6 +71,8 @@ class sougouWorker(object):
 
         table_list = ['PHONEMARK_ALL_2016_10_31', 'PHONEMARK_ALL_2016_08_23', 'PHONEMARK_ALL_2016_08_15',
                       'PHONEMARK_ALL_2016_06_12', 'PHONEMARK_ALL_2016_05_30', 'PHONEMARK_ALL_2016_05_18']
+        # table_list = ['PHONEMARK_ALL_2016_10_31']
+
 
         for table_name in table_list:
             ret = self.dao.query_all(['phone'], table_name)
@@ -78,6 +80,7 @@ class sougouWorker(object):
             for item in ret:
                 # print item
                 data = {'phone': item, 'table' : table_name}
+                # data = {'phone': item, 'table': 'phonemark_new'}
                 msg = json.dumps(data)
                 self.mq.send_message(msg)
 
@@ -93,6 +96,7 @@ class sougouWorker(object):
         self.log.info(body)
 
         try:
+            # body = '{"phone": "13437116866", "table": "PHONEMARK_ALL_2016_10_31"}'
             data = json.loads(body)
             # phone = decode['phone']
             # table = decode['table']
@@ -119,12 +123,11 @@ class sougouWorker(object):
         self.log.info(u'处理数据')
 
         if self.spider.being(data) == True:
-            pass
+            self.log.info(u'处理完成')
+            return True
         else:
-            pass
-
-        self.log.info(u'处理完成')
-        return True
+            self.log.info(u'处理失败')
+            return False
 
 
     def begin_recv(self):
@@ -141,7 +144,7 @@ class sougouWorker(object):
 if __name__ == '__main__':
 
     # spider = sougouWorker()
-    # # spider.send()
+    # spider.send()
     # spider.begin_recv()
 
     if len(sys.argv) == 1:
