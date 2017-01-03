@@ -93,10 +93,13 @@ class sougouSpider(object):
         self.log.info(u'开始处理数据, {0}'.format(body))
         try:
             result = distinct.check_repeate(self.redis, body['phone'], self.redis_name)
+            # result = 1
             if result == 1:
-                self.get_info_from_sogou(body)
+                pass
             else:
-                return False
+                return True
+
+            return self.get_info_from_sogou(body)
         except Exception, e:
             self.log.error(u'处理数据异常, 号码：{0}'.format(body))
             self.log.error(traceback.format_exc())
