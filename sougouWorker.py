@@ -140,7 +140,6 @@ class sougouWorker(object):
 
 
 
-
 if __name__ == '__main__':
 
     # spider = sougouWorker()

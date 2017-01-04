@@ -92,14 +92,23 @@ class sougouSpider(object):
     def being(self, body):
         self.log.info(u'开始处理数据, {0}'.format(body))
         try:
-            result = distinct.check_repeate(self.redis, body['phone'], self.redis_name)
-            # result = 1
-            if result == 1:
-                pass
+            # result = distinct.check_repeate(self.redis, body['phone'], self.redis_name)
+            # # result = 1
+            # if result == 1:
+            #     pass
+            # else:
+            #     return True
+
+            ret = self.get_info_from_sogou(body)
+            #0成功，1失败，2代理返回429错误
+            if ret == 0:
+                return True
+            elif ret == 1:
+                return True
+            elif ret == 2:
+                return False
             else:
                 return True
-
-            return self.get_info_from_sogou(body)
         except Exception, e:
             self.log.error(u'处理数据异常, 号码：{0}'.format(body))
             self.log.error(traceback.format_exc())
@@ -127,8 +136,9 @@ class sougouSpider(object):
             ret = self.requesetGet(url)
 
 
-            if ret.status_code == 403:
+            if ret.status_code == 403 or ret.status_code == 429:
                 self.log.info(u'代理无法使用')
+                return 2
 
             ret_json = json.loads(self.aesfunc.decrypt(ret.text))
 
@@ -179,13 +189,13 @@ class sougouSpider(object):
                     self.dao = phonemarkDao.Dao()
                 self.dao.add(phonemark)
             except Exception, e:
-                return False
+                return 1
 
         except Exception, e:
             self.log.error(traceback.format_exc())
-            return False
+            return 1
 
-        return True
+        return 0
 
     def requesetGet(self, url):
         """
@@ -198,28 +208,27 @@ class sougouSpider(object):
             self.ses = requests.session()
 
         ret = None
-        # time.sleep(2)
+
         begin = time.time()
 
         for i in range(5):
+            time.sleep(0.1)
             try:
                 if hasattr(self, 'proxy') == False:
                     self.proxy = proxy.proxy()
 
                 r = self.ses.get(url, proxies = self.proxy.getProxy())
-
+                if r.status_code == 429:
+                    return r
                 ret = bs(r.text.encode(r.encoding), 'html.parser')
-                # self.log.info(proxies)
                 self.log.info(url)
             except:
                 self.log.info(traceback.format_exc())
-                # self.proxy.removeProxy(proxy)
             if ret != None and ret.find('404 Not Found') < 0 and ret.find('403 Forbidden') < 0:
                 break
 
         end = time.time()
         if int(end - begin) > 100:
-            # self.proxy.removeProxy(proxy)
             time_out = "URL %s, proxy %s, timeout : %0.2f " % (url, proxy, (end - begin))
 
         return ret
