@@ -28,7 +28,7 @@ class proxy(object):
         # self.proxyUser = "H7SN5J89R653UHDP"
         # self.proxyPass = "222E4A29D99B0499"
 
-        targetUrl = "http://proxy.abuyun.com/current-ip"
+        self.targetUrl = "http://proxy.abuyun.com/current-ip"
 
     def getProxy(self):
         # 要访问的目标页面
