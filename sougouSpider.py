@@ -140,14 +140,13 @@ class sougouSpider(object):
             url = self.url.format(parames=parames)
             ret = self.requesetGet(url)
 
-            ret.status_code = 429
+            # ret.status_code = 429
             if ret.status_code == 429:
-                self.log.info(u'代理无法使用，数据：{0}，代理：{1}'.format(body, self.proxy.getCurIp()))
+                ip = self.proxy.getCurIp()
+                self.log.info(u'请求过多，代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
                 return 2
 
-
             soup = bs(ret.text.encode(ret.encoding), 'html.parser')
-
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
             result_json = ret_json.get("num_info")
