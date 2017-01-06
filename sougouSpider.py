@@ -201,6 +201,7 @@ class sougouSpider(object):
                 self.log.info(u'抓取数据异常,{0}'.format(body))
                 return 1
 
+
         except Exception, e:
             self.log.error(traceback.format_exc())
             self.log.info(u'抓取数据异常,{0}'.format(body))
