@@ -22,6 +22,7 @@ import requests
 import phonemarkDao
 import proxy
 import ConfigParser
+import comm_log
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -38,12 +39,14 @@ class sougouSpider(object):
         self.redis_name = conf.get('redis', 'redis_name')
 
         #日志
-        logging.basicConfig(filename="output/sougou_spider.log",
-                            level=logging.INFO,
-                            filemode='a',
-                            format='%(asctime)s - %(levelname)s: %(message)s')
-        self.log = logging.getLogger("requests")
-        self.log.setLevel(logging.WARNING)
+        # logging.basicConfig(filename="output/sougou_spider.log",
+        #                     level=logging.INFO,
+        #                     filemode='a',
+        #                     format='%(asctime)s - %(levelname)s: %(message)s')
+        # self.log = logging.getLogger("requests")
+        # self.log.setLevel(logging.WARNING)
+
+        self.log = comm_log.comm_log('sogou_spider.log')
 
         #redis
         self.pool, self.redis = distinct.redis_init()
@@ -103,9 +106,10 @@ class sougouSpider(object):
             #0成功，1失败，2代理返回429错误
             if ret == 0:
                 return True
-            elif ret == 1:
-                return True
             elif ret == 2:
+                self.log.info(u'请求过多，代理返回429错误, {0}'.format(body))
+                return True
+            elif ret == 1:
                 return False
             else:
                 return True
@@ -124,6 +128,7 @@ class sougouSpider(object):
         :return:
         """
         try:
+
             n = random.randint(0, 300 - 1)
             m = random.choice([2 * n - 1, 2 * n])
             paramstr = self.hidlist[m]
@@ -136,11 +141,15 @@ class sougouSpider(object):
             ret = self.requesetGet(url)
 
 
-            if ret.status_code == 403 or ret.status_code == 429:
-                self.log.info(u'代理无法使用')
+            if ret.status_code == 429:
+
+                self.log.info(u'代理无法使用，数据：{0}，代理：{1}'.format(body, proxy.getCurIp()))
+
                 return 2
 
-            ret_json = json.loads(self.aesfunc.decrypt(ret.text))
+            soup = bs(ret.text.encode(ret.encoding), 'html.parser')
+
+            ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
             result_json = ret_json.get("num_info")
             if result_json is None:
@@ -189,10 +198,12 @@ class sougouSpider(object):
                     self.dao = phonemarkDao.Dao()
                 self.dao.add(phonemark)
             except Exception, e:
+                self.log.info(u'抓取数据异常,{0}'.format(body))
                 return 1
 
         except Exception, e:
             self.log.error(traceback.format_exc())
+            self.log.info(u'抓取数据异常,{0}'.format(body))
             return 1
 
         return 0
@@ -211,25 +222,26 @@ class sougouSpider(object):
 
         begin = time.time()
 
-        for i in range(5):
-            time.sleep(0.1)
-            try:
-                if hasattr(self, 'proxy') == False:
-                    self.proxy = proxy.proxy()
+        # for i in range(5):
+        #     time.sleep(0.1)
+        try:
+            if hasattr(self, 'proxy') == False:
+                self.proxy = proxy.proxy()
 
-                r = self.ses.get(url, proxies = self.proxy.getProxy())
-                if r.status_code == 429:
-                    return r
-                ret = bs(r.text.encode(r.encoding), 'html.parser')
-                self.log.info(url)
-            except:
-                self.log.info(traceback.format_exc())
-            if ret != None and ret.find('404 Not Found') < 0 and ret.find('403 Forbidden') < 0:
-                break
+            ret = self.ses.get(url, proxies = self.proxy.getProxy())
+            # if r.status_code == 429:
+            #     return r
+            # ret = bs(r.text.encode(r.encoding), 'html.parser')
+            # self.log.info(url)
+        except:
+            self.log.info(u'代理请求数据异常, url:{0}'.format(url))
+            self.log.info(traceback.format_exc())
+            # if ret != None and ret.find('404 Not Found') < 0 and ret.find('403 Forbidden') < 0:
+            #     break
 
-        end = time.time()
-        if int(end - begin) > 100:
-            time_out = "URL %s, proxy %s, timeout : %0.2f " % (url, proxy, (end - begin))
+        # end = time.time()
+        # if int(end - begin) > 100:
+        #     time_out = "URL %s, proxy %s, timeout : %0.2f " % (url, proxy, (end - begin))
 
         return ret
 
