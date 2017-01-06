@@ -54,6 +54,4 @@ class proxy(object):
         proxies = self.getProxy()
         resp = requests.get(self.targetUrl, proxies=proxies)
 
-        print resp.status_code
-        print resp.text
         return resp.text
