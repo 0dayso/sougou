@@ -144,6 +144,7 @@ class sougouSpider(object):
                 self.log.info(u'代理无法使用，数据：{0}，代理：{1}'.format(body, self.proxy.getCurIp()))
                 return 2
 
+
             soup = bs(ret.text.encode(ret.encoding), 'html.parser')
 
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
