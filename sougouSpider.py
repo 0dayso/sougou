@@ -140,11 +140,8 @@ class sougouSpider(object):
             url = self.url.format(parames=parames)
             ret = self.requesetGet(url)
 
-
             if ret.status_code == 429:
-
-                self.log.info(u'代理无法使用，数据：{0}，代理：{1}'.format(body, proxy.getCurIp()))
-
+                self.log.info(u'代理无法使用，数据：{0}，代理：{1}'.format(body, self.proxy.getCurIp()))
                 return 2
 
             soup = bs(ret.text.encode(ret.encoding), 'html.parser')
