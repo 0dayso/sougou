@@ -206,6 +206,7 @@ class sougouSpider(object):
             self.log.info(u'抓取数据异常,{0}'.format(body))
             return 1
 
+        self.log.info(u'处理数据成功，数据：{0}'.format(body))
         return 0
 
     def requesetGet(self, url):
@@ -238,7 +239,7 @@ class sougouSpider(object):
             self.log.info(traceback.format_exc())
             # if ret != None and ret.find('404 Not Found') < 0 and ret.find('403 Forbidden') < 0:
             #     break
-
+        self.log.info(u'代理请求数据完成，url：{0}'.format(url))
         # end = time.time()
         # if int(end - begin) > 100:
         #     time_out = "URL %s, proxy %s, timeout : %0.2f " % (url, proxy, (end - begin))
