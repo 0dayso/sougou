@@ -29,6 +29,7 @@ import json
 import traceback
 
 import sougouSpider
+import comm_log
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -49,12 +50,13 @@ class sougouWorker(object):
         self.mq = message_queue.message(mq_name, handle_data = self.recv)
 
         # Log
-        logging.basicConfig(filename="output/sogou_mobile.log",
-                            level=logging.INFO,
-                            filemode='a',
-                            format='%(asctime)s - %(levelname)s: %(message)s')
-        self.log = logging.getLogger("requests")
-        self.log.setLevel(logging.WARNING)
+        # logging.basicConfig(filename="output/sogou_mobile.log",
+        #                     level=logging.INFO,
+        #                     filemode='a',
+        #                     format='%(asctime)s - %(levelname)s: %(message)s')
+        # self.log = logging.getLogger("requests")
+        # self.log.setLevel(logging.WARNING)
+        self.log = comm_log.comm_log('sogou_worker.log')
 
         # 初始化爬取对象
 
@@ -121,12 +123,13 @@ class sougouWorker(object):
         """
 
         self.log.info(u'处理数据')
+        self.log.info(u'数据，{0}'.format(data))
 
         if self.spider.being(data) == True:
-            self.log.info(u'处理完成')
+            self.log.info(u'处理完成，{0}'.format(data))
             return True
         else:
-            self.log.info(u'处理失败')
+            self.log.info(u'数据处理失败，{0}'.format(data))
             return False
 
 
