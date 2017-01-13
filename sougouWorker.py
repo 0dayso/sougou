@@ -56,7 +56,7 @@ class sougouWorker(object):
         #                     format='%(asctime)s - %(levelname)s: %(message)s')
         # self.log = logging.getLogger("requests")
         # self.log.setLevel(logging.WARNING)
-        log_name = 'worker' + os.getpid()
+        log_name = 'worker' + str(os.getpid())
         self.log = comm_log.comm_log(log_name)
 
         # 初始化爬取对象
