@@ -231,12 +231,16 @@ class sougouSpider(object):
             retry_count = 1
             while True:
                 ret = self.ses.get(url, proxies = self.proxy.getProxy())
+                ret.status_code = 503
                 if ret.status_code == 429:
                     wait = random.randint(1, 3)
                     time.sleep(wait)
                     self.log.info(u'请求代理超过5个，返回429{0}，随机等待{1}秒'.format(url, wait))
                     continue
                 elif ret.status_code != 200 and retry_count < 5:
+                    wait = random.randint(1, 3)
+                    time.sleep(wait)
+                    self.log.info(u'请求失败，返回code:{2}, url:{0}，随机等待{1}秒'.format(url, wait, ret.status_code))
                     retry_count += 1
                     continue
                 else:
