@@ -49,6 +49,7 @@ class sougouSpider(object):
         log_name = 'spider' + str(os.getpid())
         self.log = comm_log.comm_log(log_name)
 
+
         #redis
         self.pool, self.redis = distinct.redis_init()
 
