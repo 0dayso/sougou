@@ -152,7 +152,8 @@ class sougouSpider(object):
             try:
                 soup = bs(ret.text.encode(ret.encoding), 'html.parser')
             except Exception, e:
-                self.log.info(u'请求过多，代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
+                ip = self.proxy.getCurIp()
+                self.log.info(u'转换页面数据失败，数据：{0}，代理：{1}'.format(body, ip))
                 self.log.info(traceback.format_exc())
 
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
