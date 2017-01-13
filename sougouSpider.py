@@ -23,6 +23,7 @@ import phonemarkDao
 import proxy
 import ConfigParser
 import comm_log
+import os
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -45,8 +46,7 @@ class sougouSpider(object):
         #                     format='%(asctime)s - %(levelname)s: %(message)s')
         # self.log = logging.getLogger("requests")
         # self.log.setLevel(logging.WARNING)
-
-        self.log = comm_log.comm_log('sogou_spider.log')
+        self.log = comm_log.comm_log(os.getpid())
 
         #redis
         self.pool, self.redis = distinct.redis_init()
@@ -146,7 +146,11 @@ class sougouSpider(object):
                 self.log.info(u'请求过多，代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
                 return 2
 
-            soup = bs(ret.text.encode(ret.encoding), 'html.parser')
+            try:
+                soup = bs(ret.text.encode(ret.encoding), 'html.parser')
+            except Exception, e:
+                print 'u'
+                pass
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
             result_json = ret_json.get("num_info")

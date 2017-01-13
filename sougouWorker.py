@@ -27,7 +27,7 @@ import phonemarkDao
 import logging
 import json
 import traceback
-
+import os
 import sougouSpider
 import comm_log
 
@@ -56,7 +56,7 @@ class sougouWorker(object):
         #                     format='%(asctime)s - %(levelname)s: %(message)s')
         # self.log = logging.getLogger("requests")
         # self.log.setLevel(logging.WARNING)
-        self.log = comm_log.comm_log('sogou_worker.log')
+        self.log = comm_log.comm_log(os.getpid())
 
         # 初始化爬取对象
 
