@@ -231,7 +231,7 @@ class sougouSpider(object):
             retry_count = 1
             while True:
                 ret = self.ses.get(url, proxies = self.proxy.getProxy())
-                ret.status_code = 503
+                
                 if ret.status_code == 429:
                     wait = random.randint(1, 3)
                     time.sleep(wait)
