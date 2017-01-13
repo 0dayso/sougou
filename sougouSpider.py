@@ -46,7 +46,8 @@ class sougouSpider(object):
         #                     format='%(asctime)s - %(levelname)s: %(message)s')
         # self.log = logging.getLogger("requests")
         # self.log.setLevel(logging.WARNING)
-        self.log = comm_log.comm_log(os.getpid())
+        log_name = 'spider' + os.getpid()
+        self.log = comm_log.comm_log(log_name)
 
         #redis
         self.pool, self.redis = distinct.redis_init()
@@ -71,7 +72,7 @@ class sougouSpider(object):
                                         charset="utf8")
         except Exception as e:
             self.conn = None
-            self.log.error(u"连接数据库发生错误：" + str(e))
+            self.log.info(u"连接数据库发生错误：" + str(e))
         else:
             self.log.info(u"成功连接到数据库!")
 
@@ -114,8 +115,8 @@ class sougouSpider(object):
             else:
                 return True
         except Exception, e:
-            self.log.error(u'处理数据异常, 号码：{0}'.format(body))
-            self.log.error(traceback.format_exc())
+            self.log.info(u'处理数据异常, 号码：{0}'.format(body))
+            self.log.info(traceback.format_exc())
             return False
 
         self.log.info(u'处理数据完成, {0}'.format(body))
@@ -156,7 +157,7 @@ class sougouSpider(object):
             result_json = ret_json.get("num_info")
             if result_json is None:
                 self.un_phones.append(body['phone'])
-                self.log.error(u"此号码返回None：" + str(body['phone']))
+                self.log.info(u"此号码返回None：" + str(body['phone']))
                 return
             location, cardtype, tagcontent, tagcount = result_json.get('place'), result_json.get(
                 'tel_co'), result_json.get('tag'), result_json.get('amount')
@@ -205,7 +206,7 @@ class sougouSpider(object):
 
 
         except Exception, e:
-            self.log.error(traceback.format_exc())
+            self.log.info(traceback.format_exc())
             self.log.info(u'抓取数据异常,{0}'.format(body))
             return 1
 
