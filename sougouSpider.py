@@ -110,6 +110,7 @@ class sougouSpider(object):
                 return True
             elif ret == 2:
                 self.log.info(u'请求过多，代理返回429错误, {0}'.format(body))
+                time.sleep(0.5)
                 return True
             elif ret == 1:
                 return False
@@ -151,8 +152,9 @@ class sougouSpider(object):
             try:
                 soup = bs(ret.text.encode(ret.encoding), 'html.parser')
             except Exception, e:
-                print 'u'
-                pass
+                self.log.info(u'请求过多，代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
+                self.log.info(traceback.format_exc())
+
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
             result_json = ret_json.get("num_info")
