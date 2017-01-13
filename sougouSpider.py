@@ -143,11 +143,10 @@ class sougouSpider(object):
             url = self.url.format(parames=parames)
             ret = self.requesetGet(url)
 
-            # ret.status_code = 429
-            if ret.status_code == 429:
+            if ret.status_code != 200:
                 ip = self.proxy.getCurIp()
-                self.log.info(u'请求过多，代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
-                return 2
+                self.log.error(u'代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
+                return 1
 
             try:
                 soup = bs(ret.text.encode(ret.encoding), 'html.parser')
@@ -206,15 +205,11 @@ class sougouSpider(object):
                 self.dao.add(phonemark)
             except Exception, e:
                 self.log.info(u'抓取数据异常,{0}'.format(body))
-                return 1
 
 
         except Exception, e:
             self.log.info(traceback.format_exc())
             self.log.info(u'抓取数据异常,{0}'.format(body))
-            return 1
-
-        self.log.info(u'处理数据成功，数据：{0}'.format(body))
         return 0
 
     def requesetGet(self, url):
@@ -233,12 +228,16 @@ class sougouSpider(object):
             if hasattr(self, 'proxy') == False:
                 self.proxy = proxy.proxy()
 
+            retry_count = 1
             while True:
                 ret = self.ses.get(url, proxies = self.proxy.getProxy())
                 if ret.status_code == 429:
                     wait = random.randint(1, 3)
                     time.sleep(wait)
                     self.log.info(u'请求代理超过5个，返回429{0}，随机等待{1}秒'.format(url, wait))
+                    continue
+                elif ret.status_code != 200 and retry_count < 5:
+                    retry_count += 1
                     continue
                 else:
                     break
