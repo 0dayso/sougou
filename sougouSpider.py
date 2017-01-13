@@ -24,6 +24,7 @@ import proxy
 import ConfigParser
 import comm_log
 import os
+import random
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -110,7 +111,6 @@ class sougouSpider(object):
                 return True
             elif ret == 2:
                 self.log.info(u'请求过多，代理返回429错误, {0}'.format(body))
-                time.sleep(0.5)
                 return True
             elif ret == 1:
                 return False
@@ -228,28 +228,23 @@ class sougouSpider(object):
 
         ret = None
 
-        begin = time.time()
-
-        # for i in range(5):
-        #     time.sleep(0.1)
         try:
             if hasattr(self, 'proxy') == False:
                 self.proxy = proxy.proxy()
 
-            ret = self.ses.get(url, proxies = self.proxy.getProxy())
-            # if r.status_code == 429:
-            #     return r
-            # ret = bs(r.text.encode(r.encoding), 'html.parser')
-            # self.log.info(url)
+            while True:
+                ret = self.ses.get(url, proxies = self.proxy.getProxy())
+                if ret.status_code == 429:
+                    wait = random.randint(1, 3)
+                    time.sleep(wait)
+                    self.log.info(u'请求代理超过5个，返回429{0}，随机等待{1}秒'.format(url, wait))
+                    continue
+                else:
+                    break
         except:
             self.log.info(u'代理请求数据异常, url:{0}'.format(url))
             self.log.info(traceback.format_exc())
-            # if ret != None and ret.find('404 Not Found') < 0 and ret.find('403 Forbidden') < 0:
-            #     break
         self.log.info(u'代理请求数据完成，url：{0}'.format(url))
-        # end = time.time()
-        # if int(end - begin) > 100:
-        #     time_out = "URL %s, proxy %s, timeout : %0.2f " % (url, proxy, (end - begin))
 
         return ret
 
