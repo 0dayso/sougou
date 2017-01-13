@@ -152,8 +152,8 @@ class sougouSpider(object):
                 soup = bs(ret.text.encode(ret.encoding), 'html.parser')
             except Exception, e:
                 ip = self.proxy.getCurIp()
-                self.log.info(u'转换页面数据失败，数据：{0}，代理：{1}'.format(body, ip))
-                self.log.info(traceback.format_exc())
+                self.log.error(u'转换页面数据失败，数据：{0}，代理：{1}'.format(body, ip))
+                self.log.error(traceback.format_exc())
 
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
@@ -204,12 +204,12 @@ class sougouSpider(object):
                     self.dao = phonemarkDao.Dao()
                 self.dao.add(phonemark)
             except Exception, e:
-                self.log.info(u'抓取数据异常,{0}'.format(body))
+                self.log.error(u'抓取数据异常,{0}'.format(body))
 
 
         except Exception, e:
-            self.log.info(traceback.format_exc())
-            self.log.info(u'抓取数据异常,{0}'.format(body))
+            self.log.error(traceback.format_exc())
+            self.log.error(u'抓取数据异常,{0}'.format(body))
         return 0
 
     def requesetGet(self, url):
@@ -242,9 +242,11 @@ class sougouSpider(object):
                 else:
                     break
         except:
-            self.log.info(u'代理请求数据异常, url:{0}'.format(url))
-            self.log.info(traceback.format_exc())
-        self.log.info(u'代理请求数据完成，url：{0}'.format(url))
+            ip = self.proxy.getCurIp()
+            self.log.error(u'代理请求数据异常, url:{0}, ip:{1}'.format(url, ip))
+            self.log.error(traceback.format_exc())
+        ip = self.proxy.getCurIp()
+        self.log.info(u'代理请求数据完成，url：{0}, ip:{1}'.format(url, ip))
 
         return ret
 
