@@ -143,25 +143,20 @@ class sougouSpider(object):
             url = self.url.format(parames=parames)
             ret = self.requesetGet(url)
 
-            if ret.status_code != 200:
-                ip = self.proxy.getCurIp()
-                self.log.error(u'代理请求失败，数据：{0}，代理：{1}'.format(body, ip))
-                return 1
-
             try:
                 soup = bs(ret.text.encode(ret.encoding), 'html.parser')
             except Exception, e:
-                ip = self.proxy.getCurIp()
-                self.log.error(u'转换页面数据失败，数据：{0}，代理：{1}'.format(body, ip))
+                # ip = self.proxy.getCurIp()
+                self.log.error(u'转换页面数据失败，数据：{0}'.format(body))
                 self.log.error(traceback.format_exc())
 
             ret_json = json.loads(self.aesfunc.decrypt(soup.text))
 
             result_json = ret_json.get("num_info")
             if result_json is None:
-                self.un_phones.append(body['phone'])
+                # self.un_phones.append(body['phone'])
                 self.log.info(u"此号码返回None：" + str(body['phone']))
-                return
+                return 1
             location, cardtype, tagcontent, tagcount = result_json.get('place'), result_json.get(
                 'tel_co'), result_json.get('tag'), result_json.get('amount')
 
@@ -235,22 +230,22 @@ class sougouSpider(object):
                 if ret.status_code == 429:
                     wait = random.randint(1, 3)
                     time.sleep(wait)
-                    self.log.info(u'请求代理超过5个，返回429{0}，随机等待{1}秒'.format(url, wait))
+                    self.log.info(u'requesetGet, 请求代理超过5个，返回429{0}，随机等待{1}秒'.format(url, wait))
                     continue
-                elif ret.status_code != 200 and retry_count < 5:
+                elif ret.status_code != 200 and retry_count < 3:
                     wait = random.randint(1, 3)
                     time.sleep(wait)
-                    self.log.info(u'请求失败，返回code:{2}, url:{0}，随机等待{1}秒'.format(url, wait, ret.status_code))
+                    self.log.info(u'requesetGet, 请求失败，返回code:{2}, url:{0}，随机等待{1}秒'.format(url, wait, ret.status_code))
                     retry_count += 1
                     continue
                 else:
                     break
         except:
-            ip = self.proxy.getCurIp()
-            self.log.error(u'代理请求数据异常, url:{0}, ip:{1}'.format(url, ip))
+            # ip = self.proxy.getCurIp()
+            # self.log.error(u'代理请求数据异常, url:{0}, ip:{1}'.format(url, ip))
+            self.log.error(u'代理请求数据异常, url:{0}'.format(url))
             self.log.error(traceback.format_exc())
-        ip = self.proxy.getCurIp()
-        self.log.info(u'代理请求数据完成，url：{0}, ip:{1}'.format(url, ip))
+        self.log.info(u'代理请求数据完成，url：{0}'.format(url))
 
         return ret
 
