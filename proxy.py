@@ -52,6 +52,9 @@ class proxy(object):
 
     def getCurIp(self):
         proxies = self.getProxy()
-        resp = requests.get(self.targetUrl, proxies=proxies)
+        try:
+            resp = requests.get(self.targetUrl, proxies=proxies)
+        except Exception, e:
+            return '获取代理ip失败'
 
         return resp.text
