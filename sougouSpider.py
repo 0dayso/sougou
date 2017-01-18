@@ -205,6 +205,7 @@ class sougouSpider(object):
         except Exception, e:
             self.log.error(traceback.format_exc())
             self.log.error(u'抓取数据异常,{0}'.format(body))
+            return 1
         return 0
 
     def requesetGet(self, url):
