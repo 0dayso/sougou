@@ -48,6 +48,7 @@ class sougouWorker(object):
 
         #消息队列
         self.mq = message_queue.message(mq_name, handle_data = self.recv)
+        self.err_mq = message_queue.message("phonemark_error")
 
         # Log
         # logging.basicConfig(filename="output/sogou_mobile.log",
@@ -100,20 +101,22 @@ class sougouWorker(object):
 
         try:
             # body = '{"phone": "13437116866", "table": "PHONEMARK_ALL_2016_10_31"}'
+
             data = json.loads(body)
+            # data = {u'phone': u'15850718266', u'table': u'PHONEMARK_ALL_2016_08_23'}
+            # data = {u'phone': u'13660860136', u'table': u'PHONEMARK_ALL_2016_08_23'}
             # phone = decode['phone']
             # table = decode['table']
             ret = self.do(data)
-
             if ret == True:
                 return 1
             elif ret == False:
-                return 0
+                self.err_mq.send_message(body)
         except:
             self.log.info(body)
             self.log.info(traceback.format_exc())
 
-        return 0
+        return 1
 
 
     def do(self, data):
